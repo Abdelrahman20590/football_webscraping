@@ -2,7 +2,7 @@
 # mainNews_yallkora.py - Finding All interested_Area_news & its direct links in "https://www.yallkora.com"
 # and make an excel file with all these data.
 
-
+# libraries for the project are: beautifulsoup4, requests, pandas, lxml
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
