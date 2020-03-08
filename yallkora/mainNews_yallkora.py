@@ -2,6 +2,7 @@
 # mainNews_yallkora.py - Finding All main_news & its direct links in "https://www.yallkora.com"
 # and make an excel file with all these data.
 
+# libraries for the project are: beautifulsoup4, requests, pandas, lxml
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -35,7 +36,7 @@ for i in range(len(headlinesDiv)):
 yallkora_headlines = pd.DataFrame({
     'الترتيب': num,
     'عناوين الأخبار': headlines,
-    'لينك الخبر علي موقع يلاكورا': link_headlines
+    'لينك الخبر علي موقع يلاكورة ( تحويل مباشر )': link_headlines
 })
 
 ''' I install "openpyxl" library before this step

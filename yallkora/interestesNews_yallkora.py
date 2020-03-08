@@ -35,9 +35,9 @@ for i in range(len(headlinesDiv)):
 
 # Make data frame with pandas module to save data
 yallkora_file = pd.DataFrame({
-    'ترتيب الاخبار الحالي': num,
-    'عناوين الأخبار': headlines,
-    'لينك الخبر علي الموقع (تحويل مباشر)': links_headlines
+    'ترتيب الخبر': num,
+    'موضوعات هامة': headlines,
+    'لينك الخبر علي موقع يلاكورة ( تحويل مباشر )': links_headlines
 })
 
 ''' I install "openpyxl" library before this step to make an excel sheet with pandas'''
