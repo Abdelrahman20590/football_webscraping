@@ -110,13 +110,44 @@ class YallkoraScrapper:
 
         pprint.pprint(data_dict)
 
-    # TODO: METHOD FOR EXTRACT RECENT HEADLINES & MOST IMPORTANT ARTICLE.
-    def recent_news(self):
-        pass
+
+    def save_images(self):
+        """
+        Saving Every Image at The Main Page
+        of Yallkora Football Site
+        at The Working Directory
+
+        """
+        # Get the Yallkora main page
+        res = requests.get("https://www.yallakora.com/").text
+
+        # Make an beautiful soup object
+        yall_soup = BeautifulSoup(res, 'lxml')
+
+        # searching for every image by CSS class named "imageCntnr"
+        img_center = yall_soup.select('.imageCntnr')    # [0].find("img")['data-src']
+
+        # make a list for img url and alternate text for each if it is exists
+        img_url = [img.find("img")['data-src'].replace("\\", "/") for img in img_center]
+        img_alt = [img.find('img')['alt'] for img in img_center]
+
+        for i, url in enumerate(img_url):
+            # Get url of an image
+            img_res = requests.get(url)
+            # print(img_alt[i])
+
+            # saving every image with unique index name
+            with open(f'imgs/YallImage{i}.jpg', 'wb') as f:
+                for chunk in img_res.iter_content(100_000):
+                    f.write(chunk)
+        print('ok')
+
+
 
 
 """ I Choose this date because there aren't any matches now"""
 if __name__ == "__main__":
-    YallkoraScrapper('3/8/2020').match_results()
+    # YallkoraScrapper('3/8/2020').match_results()
+    YallkoraScrapper().save_images()
 
 
