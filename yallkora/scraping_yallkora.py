@@ -1,3 +1,4 @@
+# web_scraping code for yallkora.com
 from bs4 import BeautifulSoup
 import requests
 from pandas import DataFrame
