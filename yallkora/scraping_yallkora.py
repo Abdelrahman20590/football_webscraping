@@ -1,6 +1,6 @@
-import requests
 from bs4 import BeautifulSoup
-import pprint
+import requests
+from pandas import DataFrame
 
 
 def get_html(date=None):
@@ -26,15 +26,17 @@ class YallkoraScrapper:
         self.date = date
 
     '''
-    This is a class for Web Scraping Yallkora Website:
-             1- match_result(): To get the match result of that date.
-             2- recent_news(): To get the recent news at the site right now.
+    This is a Web Scraping Yallkora Website:
+             1- matchResults(): To get the match result of that date - format (month/day/year).
+             2- saveIimagesOfMainPage(): To save the recent news images at the site.
+             3- mainNews(): To save the recent main news & its links.
+    All save as an excel file
     '''
 
     # TODO: METHOD FOR EXTRACT MATCHES RESULTS
-    def match_results(self):
+    def matchResults(self):
         # Store Data Dictionary.
-        data_dict = {}
+        # data_dict = {}
 
         # Create empty lists for store data
         total_teamsA, total_teamsB, league_list, time_list, week_list, tv_list = [], [], [], [], [], []
@@ -95,23 +97,20 @@ class YallkoraScrapper:
         # Formate Match playboard
         match_board = [total_teamsA[i] + "  " + score_teamA[i] + " : " + score_teamB[i] + "  " + total_teamsB[i]
                        for i in range(len(total_teamsA))]
-        # print(match_board[0])
 
+        pd = DataFrame({"Match Board": match_board, "Match Time": time_list, "TV Channel": tv_list})
+        pd.to_excel("matchResults2.xlsx")
 
         # data_dict['Teams A List'] = total_teamsA
         # data_dict['Teams B List'] = total_teamsB
-        data_dict['Match Board'] = match_board
-        data_dict['Tournament or League Names'] = league_list
-        data_dict['Match Time'] = time_list
-        data_dict['Week or Round'] = week_list
-        data_dict['TV channel'] = tv_list
+        # data_dict['Match Board'] = match_board
+        # data_dict['Tournament or League Names'] = league_list
+        # data_dict['Match Time'] = time_list
+        # data_dict['Week or Round'] = week_list
+        # data_dict['TV channel'] = tv_list
 
 
-
-        pprint.pprint(data_dict)
-
-
-    def save_images(self):
+    def saveIimagesOfMainPage(self):
         """
         Saving Every Image at The Main Page
         of Yallkora Football Site
@@ -134,7 +133,7 @@ class YallkoraScrapper:
         for i, url in enumerate(img_url):
             # Get url of an image
             img_res = requests.get(url)
-            # print(img_alt[i])
+            print(f"Image number {i+1} copied!")
 
             # saving every image with unique index name
             with open(f'imgs/YallImage{i}.jpg', 'wb') as f:
@@ -142,12 +141,32 @@ class YallkoraScrapper:
                     f.write(chunk)
         print('ok')
 
+    def mainNews(self):
+        # Get the Yallkora main page
+        res = requests.get("https://www.yallakora.com/").text
+        # Make an beautiful soup object
+        yall_soup = BeautifulSoup(res, 'lxml')
+
+        headlines = yall_soup.find_all('div', class_='desc')
+        links = yall_soup.find_all('a', class_='link')
+
+        # Saving Only 6 Main news headlines & its links
+        linksList = ['https://www.yallakora.com/' + links[i]['href'] for i in range(len(links)) if i < 6]
+        headlinesList = [headlines[i].text.strip() for i in range(len(headlines)) if i < 6]
+
+        # Saving to an excel sheet
+        pd = DataFrame({"HeadLines": headlinesList, "Link": linksList})
+        pd.to_excel("scraping.xlsx")
 
 
-
-""" I Choose this date because there aren't any matches now"""
 if __name__ == "__main__":
-    # YallkoraScrapper('3/8/2020').match_results()
-    YallkoraScrapper().save_images()
 
+    """ I Choose this date because there aren't any football matches right now"""
+    YallkoraScrapper('3/8/2020').matchResults()
+
+    """ Saving All Images of Main Page to a imgs folder at our directory"""
+    YallkoraScrapper().saveIimagesOfMainPage()
+
+    """Saving 6 Main Recent Headlines of Main Page """
+    YallkoraScrapper().mainNews()
 
