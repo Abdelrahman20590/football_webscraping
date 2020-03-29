@@ -32,8 +32,6 @@ class YallkoraScrapper:
     '''
 
     def matchResults(self, date=None):
-        # Store Data Dictionary.
-        # data_dict = {}
 
         # Create empty lists for store data
         total_teamsA, total_teamsB, league_list, time_list, week_list, tv_list = [], [], [], [], [], []
@@ -98,13 +96,6 @@ class YallkoraScrapper:
         pd = DataFrame({"Match Board": match_board, "Match Time": time_list, "TV Channel": tv_list})
         return pd.to_excel("matchResults2.xlsx")
 
-        # data_dict['Teams A List'] = total_teamsA
-        # data_dict['Teams B List'] = total_teamsB
-        # data_dict['Match Board'] = match_board
-        # data_dict['Tournament or League Names'] = league_list
-        # data_dict['Match Time'] = time_list
-        # data_dict['Week or Round'] = week_list
-        # data_dict['TV channel'] = tv_list
 
 
     def saveIimagesOfMainPage(self):
