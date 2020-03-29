@@ -1,4 +1,3 @@
-# web_scraping code for yallkora.com
 from bs4 import BeautifulSoup
 import requests
 from pandas import DataFrame
@@ -23,8 +22,6 @@ def get_html(date=None):
 
 
 class YallkoraScrapper:
-    def __init__(self, date=None):
-        self.date = date
 
     '''
     This is a Web Scraping Yallkora Website:
@@ -34,8 +31,7 @@ class YallkoraScrapper:
     All save as an excel file
     '''
 
-    # TODO: METHOD FOR EXTRACT MATCHES RESULTS
-    def matchResults(self):
+    def matchResults(self, date=None):
         # Store Data Dictionary.
         # data_dict = {}
 
@@ -44,7 +40,7 @@ class YallkoraScrapper:
         score_teamA, score_teamB = [], []
 
         # Get the Page Content as a String Html.
-        page_content = get_html(self.date)
+        page_content = get_html(date)
 
         # Parse the page_content as a beautiful soup object with "lxml" parser
         soup = BeautifulSoup(page_content, 'lxml')
@@ -100,7 +96,7 @@ class YallkoraScrapper:
                        for i in range(len(total_teamsA))]
 
         pd = DataFrame({"Match Board": match_board, "Match Time": time_list, "TV Channel": tv_list})
-        pd.to_excel("matchResults2.xlsx")
+        return pd.to_excel("matchResults2.xlsx")
 
         # data_dict['Teams A List'] = total_teamsA
         # data_dict['Teams B List'] = total_teamsB
@@ -152,7 +148,7 @@ class YallkoraScrapper:
         links = yall_soup.find_all('a', class_='link')
 
         # Saving Only 6 Main news headlines & its links
-        linksList = ['https://www.yallakora.com/' + links[i]['href'] for i in range(len(links)) if i < 6]
+        linksList = ['https://www.yallakora.com/' + links[i]['href'].split("%")[0] for i in range(len(links)) if i < 6]
         headlinesList = [headlines[i].text.strip() for i in range(len(headlines)) if i < 6]
 
         # Saving to an excel sheet
@@ -161,13 +157,13 @@ class YallkoraScrapper:
 
 
 if __name__ == "__main__":
+    scraper = YallkoraScrapper()
 
     """ I Choose this date because there aren't any football matches right now"""
-    YallkoraScrapper('3/8/2020').matchResults()
+    scraper.matchResults('3/8/2020')
 
     """ Saving All Images of Main Page to a imgs folder at our directory"""
-    YallkoraScrapper().saveIimagesOfMainPage()
+    scraper.saveIimagesOfMainPage()
 
     """Saving 6 Main Recent Headlines of Main Page """
-    YallkoraScrapper().mainNews()
-
+    scraper.mainNews()
